@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRVerify | Secure QR System</title>
+
+    <style>
+        :root {
+            --bg: #070b10;
+            --panel: #0e151d;
+            --panel-light: #121e28;
+            --cyan: #00e5ff;
+            --green: #39ff88;
+            --text: #e8f1f8;
+            --muted: #8a9baa;
+            --border: #20313e;
+            --red: #ff5470;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at 50% 0%, #102631 0%, transparent 48%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.12;
+            background-image:
+                linear-gradient(#243b48 1px, transparent 1px),
+                linear-gradient(90deg, #243b48 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(to bottom, black, transparent 85%);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .navbar {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 7%;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 11, 16, 0.8);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 750;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--cyan);
+            border-radius: 12px;
+            color: var(--cyan);
+            background: #08212a;
+            box-shadow: 0 0 20px #00e5ff18;
+            font-size: 25px;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .nav-link {
+            color: var(--muted);
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: min(100% - 32px, 960px);
+            margin: 0 auto;
+            padding: 66px 0 42px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 13px;
+            border: 1px solid #17434c;
+            border-radius: 30px;
+            background: #092027;
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.7px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        h1 {
+            margin: 22px 0 14px;
+            font-size: clamp(36px, 6vw, 58px);
+            line-height: 1.12;
+            letter-spacing: -1.8px;
+        }
+
+        h1 span {
+            color: var(--cyan);
+            text-shadow: 0 0 30px #00e5ff24;
+        }
+
+        .hero p {
+            max-width: 570px;
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: 16px;
+        }
+
+        .main-card {
+            max-width: 690px;
+            margin: 0 auto;
+            padding: 30px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: linear-gradient(145deg, #101923, #0b1118);
+            box-shadow: 0 20px 70px #00000035;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .heading-icon {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: #09262d;
+            border: 1px solid #16434c;
+            color: var(--cyan);
+            font-size: 23px;
+        }
+
+        h2 {
+            font-size: 19px;
+            font-weight: 650;
+        }
+
+        .subheading {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            color: #d7e3ec;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 125px;
+            resize: vertical;
+            padding: 16px;
+            border: 1px solid #263b49;
+            border-radius: 12px;
+            outline: none;
+            background: #080e14;
+            color: var(--text);
+            font: inherit;
+            font-size: 14px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        textarea::placeholder {
+            color: #637583;
+        }
+
+        textarea:focus {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 3px #00e5ff13;
+        }
+
+        .hint {
+            margin: 9px 0 20px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 47px;
+            padding: 12px 19px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--cyan);
+            color: #041116;
+            box-shadow: 0 0 22px #00e5ff16;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 28px #00e5ff38;
+        }
+
+        .btn-secondary {
+            background: #101c26;
+            border-color: #2b414f;
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+        }
+
+        .alert {
+            margin-bottom: 22px;
+            padding: 13px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .alert.success {
+            border: 1px solid #1b7045;
+            background: #0a2419;
+            color: var(--green);
+        }
+
+        .alert.error {
+            border: 1px solid #753044;
+            background: #29121a;
+            color: #ff91a4;
+        }
+
+        .result {
+            margin-top: 28px;
+            padding: 24px;
+            border: 1px solid #1b5a48;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #0d211c, #0b1717);
+            text-align: center;
+        }
+
+        .result h2 {
+            color: var(--green);
+            margin-bottom: 7px;
+        }
+
+        .result p {
+            color: #a8c8b9;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .qr-image {
+            display: block;
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin: 22px auto;
+            padding: 10px;
+            border-radius: 12px;
+            background: white;
+        }
+
+        .record-id {
+            padding: 12px;
+            margin: 14px 0 20px;
+            border: 1px solid #234338;
+            border-radius: 8px;
+            background: #07120f;
+            color: #b8d7c8;
+            font-family: Consolas, monospace;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .result-actions .btn {
+            flex: 1 1 145px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .feature {
+            padding: 20px 15px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #0c131a;
+            text-align: center;
+        }
+
+        .feature-icon {
+            margin-bottom: 9px;
+            color: var(--cyan);
+            font-size: 23px;
+        }
+
+        .feature h3 {
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .feature p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 23px 16px;
+            border-top: 1px solid var(--border);
+            color: #687b89;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        footer span {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 16px 20px;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .container {
+                padding-top: 44px;
+            }
+
+            .main-card {
+                padding: 21px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="brand" href="/">
+            <div class="brand-icon">⌗</div>
+            <div>QR<span>Verify</span></div>
+        </a>
+        <a class="nav-link" href="{{ url_for('records') }}">
+            View Records &nbsp; ↗
+        </a>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <div class="eyebrow">
+                <span class="live-dot"></span>
+                SECURE QR VERIFICATION SYSTEM
+            </div>
+            <h1>Generate. Scan. <span>Verify.</span></h1>
+            <p>
+                Create unique QR codes and verify their authenticity
+                through a simple, secure verification workflow.
+            </p>
+        </section>
+
+        <section class="main-card">
+            <div class="card-heading">
+                <div class="heading-icon">⌘</div>
+                <div>
+                    <h2>QR Code Generator</h2>
+                    <p class="subheading">
+                        Enter your text or URL to generate a unique QR code.
+                    </p>
+                </div>
+            </div>
+
+            {% if message %}
+                <div class="alert {{ message_type }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+
+            <form action="{{ url_for('generate') }}" method="POST">
+                <label for="content">CONTENT / DESTINATION URL</label>
+                <textarea
+                    id="content"
+                    name="content"
+                    placeholder="Enter text, a URL, or any content you want to encode..."
+                    maxlength="2000"
+                    required
+                ></textarea>
+                <p class="hint">
+                    ↳ Maximum 2,000 characters. Your content is stored
+                    and linked to a unique verification ID.
+                </p>
+                <button type="submit" class="btn btn-primary">
+                    ⊕ &nbsp; Generate QR Code
+                </button>
+            </form>
+
+            {% if qr_image %}
+                <section class="result">
+                    <h2>✓ QR Code Generated</h2>
+                    <p>Your QR code is ready to use.</p>
+
+                    <img
+                        class="qr-image"
+                        src="{{ url_for('static', filename='qrcodes/' + qr_image) }}"
+                        alt="Generated QR code"
+                    >
+
+                    <p>UNIQUE VERIFICATION ID</p>
+                    <div class="record-id">{{ record_id }}</div>
+
+                    <p>Original content: {{ content }}</p>
+
+                    <div class="result-actions" style="margin-top: 20px;">
+                        <a
+                            class="btn btn-primary"
+                            href="{{ url_for('static', filename='qrcodes/' + qr_image) }}"
+                            download="QRVerify-{{ record_id }}.png"
+                        >
+                            ↓ Download QR
+                        </a>
+                        <a
+                            class="btn btn-secondary"
+                            href="{{ url_for('verify', record_id=record_id) }}"
+                        >
+                            ✓ Verify Now
+                        </a>
+                    </div>
+                </section>
+            {% endif %}
+        </section>
+
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">▦</div>
+                <h3>Unique QR Codes</h3>
+                <p>Generate a unique code for every record.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⛨</div>
+                <h3>Live Verification</h3>
+                <p>Check whether a record is valid or revoked.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⌘</div>
+                <h3>Record Management</h3>
+                <p>View records and revoke codes when needed.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>QRVerify</span> · QR Generation & Verification System
+        <br>
+        Built with Flask, SQLite and Python
+    </footer>
+</body>
+</html>

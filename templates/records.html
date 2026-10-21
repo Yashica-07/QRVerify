@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Records Dashboard | QRVerify</title>
+
+    <style>
+        :root {
+            --bg: #070b10;
+            --panel: #0e151d;
+            --cyan: #00e5ff;
+            --green: #39ff88;
+            --red: #ff5470;
+            --text: #e8f1f8;
+            --muted: #8a9baa;
+            --border: #20313e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(ellipse at 50% 0%, #102631, transparent 48%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            border-bottom: 1px solid var(--border);
+            background: #070b10dd;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 21px;
+            font-weight: 750;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--cyan);
+            border-radius: 11px;
+            background: #09232b;
+            color: var(--cyan);
+            font-size: 23px;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .nav-link {
+            color: var(--muted);
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 36px));
+            margin: auto;
+            padding: 48px 0;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 17px 0 30px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+            font-size: clamp(30px, 5vw, 42px);
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: var(--cyan);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 15px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--cyan);
+            color: #041116;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 22px #00e5ff35;
+        }
+
+        .btn-secondary {
+            border-color: #2b414f;
+            background: #101c26;
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .btn-danger {
+            border-color: #743044;
+            background: #29121a;
+            color: #ff8295;
+        }
+
+        .btn-danger:hover {
+            border-color: var(--red);
+            box-shadow: 0 0 18px #ff547018;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: linear-gradient(145deg, #101923, #0b1118);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stat-number {
+            margin-top: 7px;
+            font-size: 29px;
+            font-weight: 750;
+        }
+
+        .stat-number.cyan {
+            color: var(--cyan);
+        }
+
+        .stat-number.green {
+            color: var(--green);
+        }
+
+        .stat-number.red {
+            color: var(--red);
+        }
+
+        .table-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: #0c131a;
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-header h2 {
+            font-size: 16px;
+        }
+
+        .table-header p {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #101a23;
+        }
+
+        th {
+            padding: 14px 18px;
+            color: #8da4b3;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 17px 18px;
+            border-top: 1px solid #1b2933;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #111d26;
+        }
+
+        .content-cell {
+            min-width: 170px;
+            max-width: 280px;
+            color: #c4d3df;
+            overflow-wrap: anywhere;
+        }
+
+        .id-cell {
+            min-width: 150px;
+            max-width: 210px;
+            color: var(--muted);
+            font-family: Consolas, monospace;
+            font-size: 11px;
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border: 1px solid;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status.valid {
+            border-color: #1b7045;
+            background: #0a2419;
+            color: var(--green);
+        }
+
+        .status.revoked {
+            border-color: #753044;
+            background: #29121a;
+            color: #ff8295;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .actions .btn {
+            min-height: 34px;
+            padding: 7px 11px;
+            font-size: 11px;
+        }
+
+        .empty-state {
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            margin-bottom: 14px;
+            color: var(--cyan);
+            font-size: 39px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 7px;
+            font-size: 18px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        footer {
+            padding: 22px;
+            border-top: 1px solid var(--border);
+            color: #687b89;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        footer span {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 650px) {
+            .navbar {
+                padding: 15px 18px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .container {
+                padding-top: 32px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px 18px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+            .page-heading {
+                align-items: flex-start;
+            }
+
+            .table-header {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="brand" href="/">
+            <div class="brand-icon">⌗</div>
+            <div>QR<span>Verify</span></div>
+        </a>
+        <a class="nav-link" href="/">← Back to Home</a>
+    </nav>
+
+    <main class="container">
+        <div class="eyebrow">
+            <span class="live-dot"></span>
+            SYSTEM / RECORD MANAGEMENT
+        </div>
+
+        <section class="page-heading">
+            <div>
+                <h1>Records <span>Dashboard</span></h1>
+                <p class="subtitle">
+                    Manage QR records, verify status, and revoke access when required.
+                </p>
+            </div>
+
+            <a class="btn btn-primary" href="/">
+                ⊕ &nbsp; Generate New QR
+            </a>
+        </section>
+
+        <section class="stats">
+            <div class="stat-card">
+                <p class="stat-label">TOTAL RECORDS</p>
+                <div class="stat-number cyan">{{ records|length }}</div>
+            </div>
+
+            <div class="stat-card">
+                <p class="stat-label">VALID RECORDS</p>
+                <div class="stat-number green">
+                    {{ records|selectattr('status', 'equalto', 'Valid')|list|length }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <p class="stat-label">REVOKED RECORDS</p>
+                <div class="stat-number red">
+                    {{ records|selectattr('status', 'equalto', 'Revoked')|list|length }}
+                </div>
+            </div>
+        </section>
+
+        <section class="table-card">
+            <div class="table-header">
+                <div>
+                    <h2>QR Record Registry</h2>
+                    <p>Stored records and their current verification status.</p>
+                </div>
+                <span class="eyebrow">● DATABASE CONNECTED</span>
+            </div>
+
+            {% if records %}
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>RECORD ID</th>
+                                <th>CONTENT</th>
+                                <th>STATUS</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in records %}
+                                <tr>
+                                    <td class="id-cell">{{ record.id }}</td>
+
+                                    <td class="content-cell">
+                                        {{ record.content }}
+                                    </td>
+
+                                    <td>
+                                        {% if record.status == 'Valid' %}
+                                            <span class="status valid">
+                                                ✓ Valid
+                                            </span>
+                                        {% else %}
+                                            <span class="status revoked">
+                                                ✕ Revoked
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <div class="actions">
+                                            <a
+                                                class="btn btn-secondary"
+                                                href="{{ url_for('verify', record_id=record.id) }}"
+                                            >
+                                                ↗ Verify
+                                            </a>
+
+                                            {% if record.status == 'Valid' %}
+                                                <form
+                                                    action="{{ url_for('revoke', record_id=record.id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to revoke this QR code?');"
+                                                >
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-danger"
+                                                    >
+                                                        ✕ Revoke
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">▦</div>
+                    <h3>No QR records found</h3>
+                    <p>Generate your first QR code to see it listed here.</p>
+                    <a class="btn btn-primary" href="/">
+                        ⊕ Generate QR Code
+                    </a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <span>QRVerify</span> · QR Generation & Verification System
+        <br>
+        Built with Flask, SQLite and Python
+    </footer>
+</body>
+</html>

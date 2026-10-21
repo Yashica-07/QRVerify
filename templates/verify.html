@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Verification | QRVerify</title>
+
+    <style>
+        :root {
+            --bg: #070b10;
+            --panel: #0e151d;
+            --cyan: #00e5ff;
+            --green: #39ff88;
+            --red: #ff5470;
+            --text: #e8f1f8;
+            --muted: #8a9baa;
+            --border: #20313e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background:
+                radial-gradient(ellipse at 50% 0%, #102631, transparent 55%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 7%;
+            border-bottom: 1px solid var(--border);
+            background: #070b10dd;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 21px;
+            font-weight: 750;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--cyan);
+            border-radius: 11px;
+            background: #09232b;
+            color: var(--cyan);
+            font-size: 23px;
+        }
+
+        .brand span {
+            color: var(--cyan);
+        }
+
+        .nav-link {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 55px 18px;
+        }
+
+        .verification-card {
+            width: 100%;
+            max-width: 590px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: linear-gradient(145deg, #101923, #0b1118);
+            box-shadow: 0 25px 80px #00000040;
+        }
+
+        .top-line {
+            height: 4px;
+            background: var(--status-color);
+            box-shadow: 0 0 20px var(--status-color);
+        }
+
+        .card-content {
+            padding: 38px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .status-icon {
+            display: grid;
+            place-items: center;
+            width: 90px;
+            height: 90px;
+            margin: 25px auto 20px;
+            border: 1px solid var(--status-color);
+            border-radius: 50%;
+            background: var(--status-bg);
+            color: var(--status-color);
+            box-shadow: 0 0 32px var(--status-glow);
+            font-size: 45px;
+        }
+
+        h1 {
+            margin-bottom: 9px;
+            font-size: clamp(27px, 5vw, 36px);
+            letter-spacing: -0.8px;
+        }
+
+        .status-description {
+            margin-bottom: 27px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .details {
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #080e14;
+            text-align: left;
+        }
+
+        .details h2 {
+            margin-bottom: 17px;
+            color: var(--cyan);
+            font-size: 13px;
+            letter-spacing: 0.7px;
+        }
+
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #1b2933;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            color: var(--text);
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border: 1px solid var(--status-color);
+            border-radius: 20px;
+            background: var(--status-bg);
+            color: var(--status-color);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 46px;
+            margin-top: 25px;
+            padding: 12px 22px;
+            border: 1px solid var(--cyan);
+            border-radius: 10px;
+            background: #09232b;
+            color: var(--cyan);
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--cyan);
+            color: #041116;
+            box-shadow: 0 0 24px #00e5ff25;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: #687b89;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        footer span {
+            color: var(--cyan);
+        }
+
+        @media (max-width: 500px) {
+            .navbar {
+                padding: 15px 18px;
+            }
+
+            .brand {
+                font-size: 18px;
+            }
+
+            .card-content {
+                padding: 25px 19px;
+            }
+
+            .details {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a class="brand" href="/">
+            <div class="brand-icon">⌗</div>
+            <div>QR<span>Verify</span></div>
+        </a>
+        <a class="nav-link" href="{{ url_for('records') }}">
+            View Records ↗
+        </a>
+    </nav>
+
+    {% if valid %}
+        <main>
+            <section class="verification-card"
+                style="--status-color: #39ff88; --status-bg: #0a2419; --status-glow: #39ff8820;">
+                <div class="top-line"></div>
+                <div class="card-content">
+                    <p class="eyebrow">SECURITY CHECK / COMPLETE</p>
+
+                    <div class="status-icon">✓</div>
+
+                    <h1>QR Code is Valid</h1>
+                    <p class="status-description">
+                        {{ message }}
+                    </p>
+
+                    <div class="details">
+                        <h2>VERIFICATION DETAILS</h2>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Record ID</span>
+                            <div class="detail-value">{{ record.id }}</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Original Content</span>
+                            <div class="detail-value">{{ record.content }}</div>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Verification Status</span>
+                            <span class="status-badge">✓ {{ record.status }}</span>
+                        </div>
+                    </div>
+
+                    <a class="btn" href="/">← Back to Home</a>
+                </div>
+            </section>
+        </main>
+    {% else %}
+        <main>
+            <section class="verification-card"
+                style="--status-color: #ff5470; --status-bg: #29121a; --status-glow: #ff547020;">
+                <div class="top-line"></div>
+                <div class="card-content">
+                    <p class="eyebrow">SECURITY CHECK / FAILED</p>
+
+                    <div class="status-icon">✕</div>
+
+                    <h1>QR Code is Invalid</h1>
+                    <p class="status-description">
+                        {{ message }}
+                    </p>
+
+                    <div class="details">
+                        <h2>VERIFICATION RESULT</h2>
+                        <div class="detail-row">
+                            <span class="detail-label">Status</span>
+                            <span class="status-badge">✕ Invalid / Revoked</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">System Response</span>
+                            <div class="detail-value">
+                                This record could not be verified as valid.
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="btn" href="/">← Back to Home</a>
+                </div>
+            </section>
+        </main>
+    {% endif %}
+
+    <footer>
+        <span>QRVerify</span> · QR Generation & Verification System
+        <br>
+        Verification status is based on the current record in the database.
+    </footer>
+</body>
+</html>
