@@ -27,12 +27,31 @@ pipeline {
             }
         }
         
+       
         stage('Build Docker Image') {
             steps {
                 echo 'Building QRVerify Docker image'
                 sh 'docker build -t qrverify:latest .'
             }
         }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_TOKEN'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker tag qrverify:latest "$DOCKER_USER/qrverify:latest"
+                        docker push "$DOCKER_USER/qrverify:latest"
+                        docker logout
+                    '''
+                }
+            }
+        }
+
 
     }
 
