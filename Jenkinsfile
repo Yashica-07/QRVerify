@@ -26,6 +26,14 @@ pipeline {
                 sh '.venv/bin/python -c "import app; print(1)"'
             }
         }
+        
+        stage('Build Docker Image') {
+            steps {
+                echo 'Building QRVerify Docker image'
+                sh 'docker build -t qrverify:latest .'
+            }
+        }
+
     }
 
     post {
