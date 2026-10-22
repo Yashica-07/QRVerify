@@ -23,7 +23,7 @@ pipeline {
             steps {
                 echo 'Running QRVerify validation'
                 sh '.venv/bin/python -m py_compile app.py'
-                sh '.venv/bin/python -c "import app; print(\"QRVerify application imported successfully\")"'
+                sh '.venv/bin/python -c "import app; print(1)"'
             }
         }
     }
