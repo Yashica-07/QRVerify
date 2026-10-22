@@ -51,6 +51,22 @@ pipeline {
                 }
             }
         }
+        
+        stage('Deploy to Kubernetes') {
+            steps {
+                echo 'Deploying QRVerify to Kubernetes'
+                sh 'kubectl apply -f k8s/'
+            }
+        }
+
+        stage('Verify Kubernetes Deployment') {
+            steps {
+                echo 'Waiting for QRVerify rollout'
+                sh 'kubectl rollout status deployment/qrverify --timeout=120s'
+                sh 'kubectl get pods,svc'
+            }
+        }
+
 
 
     }

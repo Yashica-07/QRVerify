@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qrverify
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qrverify
+  template:
+    metadata:
+      labels:
+        app: qrverify
+    spec:
+      containers:
+        - name: qrverify
+          image: yashica07/qrverify:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
